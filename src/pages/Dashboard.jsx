@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { PlusCircle, Edit2, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import {   Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectLabel,SelectItem,SelectSeparator, } from '@/components/ui/select'
+import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
@@ -68,40 +68,40 @@ export default function Dashboard() {
         <div>
           <Label htmlFor="httpStatus">HTTP Status</Label>
           <Select name="httpStatus" value={mock.httpStatus} onValueChange={(value) => handleInputChange({ target: { name: 'httpStatus', value } }, setMock)}>
-            <Select.Trigger id="httpStatus">
-              <Select.Value placeholder="Select HTTP status" />
-            </Select.Trigger>
-            <Select.Content>
-              <Select.Item value="200 - OK">200 - OK</Select.Item>
-              <Select.Item value="201 - Created">201 - Created</Select.Item>
-              <Select.Item value="404 - Not Found">404 - Not Found</Select.Item>
-            </Select.Content>
+            <SelectTrigger id="httpStatus">
+              <SelectValue placeholder="Select HTTP status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="200 - OK">200 - OK</SelectItem>
+              <SelectItem value="201 - Created">201 - Created</SelectItem>
+              <SelectItem value="404 - Not Found">404 - Not Found</SelectItem>
+            </SelectContent>
           </Select>
         </div>
         <div>
           <Label htmlFor="contentType">Response Content Type</Label>
           <Select name="contentType" value={mock.contentType} onValueChange={(value) => handleInputChange({ target: { name: 'contentType', value } }, setMock)}>
-            <Select.Trigger id="contentType">
-              <Select.Value placeholder="Select content type" />
-            </Select.Trigger>
-            <Select.Content>
-              <Select.Item value="application/json">application/json</Select.Item>
-              <Select.Item value="text/plain">text/plain</Select.Item>
-              <Select.Item value="text/html">text/html</Select.Item>
-            </Select.Content>
+            <SelectTrigger id="contentType">
+              <SelectValue placeholder="Select content type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="application/json">application/json</SelectItem>
+              <SelectItem value="text/plain">text/plain</SelectItem>
+              <SelectItem value="text/html">text/html</SelectItem>
+            </SelectContent>
           </Select>
         </div>
       </div>
       <div>
         <Label htmlFor="charset">Charset</Label>
         <Select name="charset" value={mock.charset} onValueChange={(value) => handleInputChange({ target: { name: 'charset', value } }, setMock)}>
-          <Select.Trigger id="charset">
-            <Select.Value placeholder="Select charset" />
-          </Select.Trigger>
-          <Select.Content>
-            <Select.Item value="UTF-8">UTF-8</Select.Item>
-            <Select.Item value="ISO-8859-1">ISO-8859-1</Select.Item>
-          </Select.Content>
+          <SelectTrigger id="charset">
+            <SelectValue placeholder="Select charset" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="UTF-8">UTF-8</SelectItem>
+            <SelectItem value="ISO-8859-1">ISO-8859-1</SelectItem>
+          </SelectContent>
         </Select>
       </div>
       <div>
@@ -217,7 +217,12 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
-      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+      <Dialog open={isEditModalOpen} onOpenChange={(open) => {
+        setIsEditModalOpen(open);
+        if (!open) {
+          setEditingMock(null); // Restablece editingMock al cerrar el modal
+        }
+      }}>
         <DialogContent className="sm:max-w-[625px]">
           <DialogHeader>
             <DialogTitle>Edit your mock</DialogTitle>
