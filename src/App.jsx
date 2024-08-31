@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Dashboard from './pages/Dashboard'
 import Documentation from './pages/Documentation'
 import Login from './pages/Login'
+import CreateAcc from './pages/CreateAcc'
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
             <Route path="/documentation" element={<Documentation />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/create-account" element={<CreateAcc />} />
           </Routes>
         </main>
       </div>
