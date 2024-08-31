@@ -15,7 +15,7 @@ export default function Login() {
   };
 
   return (
-    <div className="container mx-auto p-4 flex justify-center items-center min-h-screen">
+    <div className="container mx-auto p-4 flex justify-center items-center min-h-[60vh]">
       <Card className="w-[350px]">
         <CardHeader>
           <CardTitle>Login</CardTitle>

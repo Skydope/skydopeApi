@@ -35,7 +35,7 @@ export default function CreateAcc() {
   };
 
   return (
-    <div className="container mx-auto p-4 flex justify-center items-center min-h-screen">
+    <div className="container mx-auto p-4 flex justify-center items-center min-h-[60vh]">
       <Card className="w-[500px]">
         <CardHeader>
           <CardTitle>Create Account</CardTitle>
