@@ -1,5 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom'
+import { House, ScrollText,LayoutDashboard, User } from 'lucide-react';
 import { Button } from './components/ui/button'
 import ThemeToggle from './components/ui/theme';
 import  Footer  from './components/footer'
@@ -17,16 +18,20 @@ function App() {
           <nav className="flex justify-between items-center">
             <Link to="/" className="text-2xl font-bold">Skydope API</Link>
             <div className="space-x-4">
-              <Button variant="ghost" asChild>
+              <Button variant="ghost">
+                <House className="h-5 w-5" />
                 <Link to="/">Home</Link>
               </Button>
-              <Button variant="ghost" asChild>
+              <Button variant="ghost">
+              <ScrollText className="h-5 w-5" />
                 <Link to="/documentation">Documentation</Link>
               </Button>
-              <Button variant="ghost" asChild>
+              <Button variant="ghost">
+              <LayoutDashboard className="h-5 w-5" />
                 <Link to="/dashboard">Dashboard</Link>
               </Button>
-              <Button variant="outline" asChild>
+              <Button variant="outline">
+              <User className="h-5 w-5" />
                 <Link to="/login">Login</Link>
               </Button>
               <ThemeToggle />
