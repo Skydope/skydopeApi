@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { PlusCircle, Edit2, Trash2 } from 'lucide-react';
+import ReactJson from 'react-json-view';
+import { PlusCircle, Edit2, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -125,6 +126,16 @@ export default function Dashboard() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [mockToDelete, setMockToDelete] = useState(null);
+  const [expandedMockId, setExpandedMockId] = useState(null);
+
+const toggleExpand = (mockId) => {
+  if (expandedMockId === mockId) {
+    setExpandedMockId(null); // Colapsar si se hace clic en el mismo mock
+  } else {
+    setExpandedMockId(mockId); // Expandir el nuevo mock
+  }
+};
+
 
   useEffect(() => {
     setMocks([
@@ -176,6 +187,7 @@ export default function Dashboard() {
     setIsDeleteModalOpen(true);
   }, []);
 
+  const theme = localStorage.getItem('theme') || 'light';
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
@@ -201,47 +213,78 @@ export default function Dashboard() {
       </div>
       
       <Card>
-        <CardHeader>
-          <CardTitle>Manage your mocks</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
+  <CardHeader>
+    <CardTitle>Manage your mocks</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Name</TableHead>
+          <TableHead>Description</TableHead>
+          <TableHead>Date</TableHead>
+          <TableHead>Actions</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {mocks.map((mock) => (
+          <React.Fragment key={mock.id}>
+            <TableRow
+              onClick={() => toggleExpand(mock.id)}
+              className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              <TableCell>
+                <div className="flex items-center">
+                  <span>{mock.name}</span>
+                  <span className="ml-2">
+                    {expandedMockId === mock.id ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    )}
+                  </span>
+                </div>
+              </TableCell>
+              <TableCell>
+                <span className="bg-gray-200 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">
+                  {mock.contentType}
+                </span>
+                {mock.description}
+              </TableCell>
+              <TableCell>{mock.date}</TableCell>
+              <TableCell>
+                <div className="flex gap-2">
+                  <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); handleEdit(mock); }}>
+                    <Edit2 className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); handleDeleteClick(mock); }}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+            {expandedMockId === mock.id && (
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableCell colSpan={4}>
+                  <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-md">
+                    <ReactJson
+                      src={mock.body}
+                      name={false} // Para no mostrar el nombre del root
+                      enableClipboard={false} // Para desactivar copiar al portapapeles
+                      displayDataTypes={false} // Para no mostrar el tipo de datos
+                      collapsed={false} // Para expandir por defecto
+                      theme={theme === 'dark' ? 'summerfruit' : 'summerfruit:inverted'} // Cambia el tema dinámicamente
+                    />
+                  </div>
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {mocks.map((mock) => (
-                <TableRow key={mock.id}>
-                  <TableCell>{mock.name}</TableCell>
-                  <TableCell>
-                    <span className="bg-gray-200 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">
-                      {mock.contentType}
-                    </span>
-                    {mock.description}
-                  </TableCell>
-                  <TableCell>{mock.date}</TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button variant="ghost" size="icon" onClick={() => handleEdit(mock)}>
-                        <Edit2 className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(mock)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
+            )}
+          </React.Fragment>
+        ))}
+      </TableBody>
+    </Table>
+  </CardContent>
+</Card>
       {/* Dialogo para confirmar eliminación */}
       <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
         <DialogContent className="sm:max-w-[400px]">

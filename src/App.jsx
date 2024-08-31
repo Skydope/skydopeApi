@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom'
-import { House, ScrollText,LayoutDashboard, User } from 'lucide-react';
+import { House, ScrollText,LayoutDashboard, User, Braces } from 'lucide-react';
 import { Button } from './components/ui/button'
 import ThemeToggle from './components/ui/theme';
 import  Footer  from './components/footer'
@@ -16,7 +16,12 @@ function App() {
       <div className="min-h-screen bg-background">
         <header className="container mx-auto p-4">
           <nav className="flex justify-between items-center">
-            <Link to="/" className="text-2xl font-bold">Skydope API</Link>
+            <div className='flex items-center'>
+            <Braces className='mr-1'/>
+            <Link to="/" className="text-2xl font-bold">
+            Skydope API
+            </Link>
+            </div>
             <div className="space-x-4">
               <Button variant="ghost">
                 <House className="h-5 w-5" />
