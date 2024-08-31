@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,6 +7,11 @@ import { Label } from '@/components/ui/label';
 
 export default function Login() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = 'Login | Skydope API';
+  }, []);
+
 
   const handleSubmit = (e) => {
     e.preventDefault();

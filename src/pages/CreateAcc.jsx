@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -14,6 +14,11 @@ export default function CreateAcc() {
   });
 
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    document.title = 'Create Account | Skydope API';
+  }, []);
+
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;

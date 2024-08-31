@@ -132,6 +132,7 @@ export default function Dashboard() {
       { id: '2', name: 'Aldeanos es', description: 'JSON data', date: '2024-07-26', contentType: 'application/json', httpStatus: '201 - Created', charset: 'UTF-8', headers: '{"X-Custom-Header": "Value2"}', body: '{"key2": "value2"}', secretToken: 'secret2', mockIdentifier: 'mock2', neverExpire: true },
       { id: '3', name: 'c30bf7ea-f238-4956-a634-4a8ca5d196b8', description: 'JSON data', date: '2024-08-02', contentType: 'application/json', httpStatus: '404 - Not Found', charset: 'UTF-8', headers: '{"X-Custom-Header": "Value3"}', body: '{"key3": "value3"}', secretToken: 'secret3', mockIdentifier: 'mock3', neverExpire: false },
     ]);
+    document.title = 'Dashboard | Skydope API';
   }, []);
 
   const handleInputChange = useCallback((e) => {
@@ -247,6 +248,7 @@ export default function Dashboard() {
           <DialogHeader>
             <DialogTitle>Confirm Deletion</DialogTitle>
           </DialogHeader>
+          {mockToDelete && <h3 className="text-lg font-semibold">{mockToDelete.name}</h3>}
           <p>Are you sure you want to delete this mock?</p>
           <div className="flex justify-end gap-4 mt-4">
             <Button variant="ghost" onClick={() => setIsDeleteModalOpen(false)}>
@@ -274,7 +276,7 @@ export default function Dashboard() {
       }}>
         <DialogContent className="sm:max-w-[625px]">
           <DialogHeader>
-            <DialogTitle>Edit your mock</DialogTitle>
+          <DialogTitle>Edit your mock {formState.name ? `(${formState.name})` : ''}</DialogTitle>
           </DialogHeader>
           <MemoizedMockForm
             mock={formState}

@@ -1,9 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowRight, Code, Database, Zap } from 'lucide-react'
 
 export default function Home() {
+  useEffect(() => {
+    document.title = 'Home | Skydope API';
+  }, []);
+
   return (
     <div className="container mx-auto p-4">
       <div className="text-center mb-12">
