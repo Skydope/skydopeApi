@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import ReactJson from 'react-json-view';
-import { PlusCircle, Edit2, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import {  Edit2, Trash2, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -13,6 +13,7 @@ import { Switch } from '@/components/ui/switch';
 
 const initialState = {
   httpStatus: '200 - OK',
+  name: '',
   contentType: 'application/json',
   charset: 'UTF-8',
   headers: '',
@@ -37,6 +38,17 @@ const MockForm = ({ mock, setMock, onSubmit, isEditing, handleInputChange, handl
             <SelectItem value="404 - Not Found">404 - Not Found</SelectItem>
           </SelectContent>
         </Select>
+      </div>
+      <div>
+        <Label htmlFor="name">Mock Name</Label>
+        <Input
+          id="name"
+          name="name"
+          placeholder="Enter Name for Mock"
+          value={mock.name}
+          onChange={(e) => handleInputChange(e, setMock)}
+          required
+        />
       </div>
       <div>
         <Label htmlFor="contentType">Response Content Type</Label>
@@ -82,11 +94,12 @@ const MockForm = ({ mock, setMock, onSubmit, isEditing, handleInputChange, handl
         placeholder='{"key": "value"}'
         value={mock.body}
         onChange={(e) => handleInputChange(e, setMock)}
+        required
       />
     </div>
     <div className="grid grid-cols-2 gap-4">
       <div>
-        <Label htmlFor="secretToken">Secret token</Label>
+        <Label htmlFor="secretToken">Secret token (Optional)</Label>
         <Input
           id="secretToken"
           name="secretToken"
@@ -96,7 +109,7 @@ const MockForm = ({ mock, setMock, onSubmit, isEditing, handleInputChange, handl
         />
       </div>
       <div>
-        <Label htmlFor="mockIdentifier">Mock identifier</Label>
+        <Label htmlFor="mockIdentifier">Mock identifier (Optional)</Label>
         <Input
           id="mockIdentifier"
           name="mockIdentifier"
@@ -123,10 +136,12 @@ const MemoizedMockForm = React.memo(MockForm);
 export default function Dashboard() {
   const [mocks, setMocks] = useState([]);
   const [formState, setFormState] = useState(initialState);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [mockToDelete, setMockToDelete] = useState(null);
   const [expandedMockId, setExpandedMockId] = useState(null);
+  const theme = localStorage.getItem('theme') || 'light';
 
 const toggleExpand = (mockId) => {
   if (expandedMockId === mockId) {
@@ -139,9 +154,9 @@ const toggleExpand = (mockId) => {
 
   useEffect(() => {
     setMocks([
-      { id: '1', name: 'Aldeanos en', description: 'JSON data', date: '2024-07-26', contentType: 'application/json', httpStatus: '200 - OK', charset: 'UTF-8', headers: '{"X-Custom-Header": "Value"}', body: '{"key": "value"}', secretToken: 'secret1', mockIdentifier: 'mock1', neverExpire: false },
-      { id: '2', name: 'Aldeanos es', description: 'JSON data', date: '2024-07-26', contentType: 'application/json', httpStatus: '201 - Created', charset: 'UTF-8', headers: '{"X-Custom-Header": "Value2"}', body: '{"key2": "value2"}', secretToken: 'secret2', mockIdentifier: 'mock2', neverExpire: true },
-      { id: '3', name: 'c30bf7ea-f238-4956-a634-4a8ca5d196b8', description: 'JSON data', date: '2024-08-02', contentType: 'application/json', httpStatus: '404 - Not Found', charset: 'UTF-8', headers: '{"X-Custom-Header": "Value3"}', body: '{"key3": "value3"}', secretToken: 'secret3', mockIdentifier: 'mock3', neverExpire: false },
+      { id: '1', name: 'Aldeanos en', description: 'JSON data', date: '2024-07-26', contentType: 'application/json', httpStatus: '200 - OK', charset: 'UTF-8', headers: '{"X-Custom-Header": "Value"}', body: JSON.parse('{"key": "value"}'), secretToken: 'secret1', mockIdentifier: 'mock1', neverExpire: false },
+      { id: '2', name: 'Aldeanos es', description: 'JSON data', date: '2024-07-26', contentType: 'application/json', httpStatus: '201 - Created', charset: 'UTF-8', headers: '{"X-Custom-Header": "Value2"}', body: JSON.parse('{"key2": "value2"}'), secretToken: 'secret2', mockIdentifier: 'mock2', neverExpire: true },
+      { id: '3', name: 'c30bf7ea-f238-4956-a634-4a8ca5d196b8', description: 'JSON data', date: '2024-08-02', contentType: 'application/json', httpStatus: '404 - Not Found', charset: 'UTF-8', headers: '{"X-Custom-Header": "Value3"}', body: JSON.parse('{"key3": "value3"}'), secretToken: 'secret3', mockIdentifier: 'mock3', neverExpire: false },
     ]);
     document.title = 'Dashboard | Skydope API';
   }, []);
@@ -163,22 +178,29 @@ const toggleExpand = (mockId) => {
 
   const handleSubmit = useCallback((e, isEditing = false) => {
     e.preventDefault();
+    const parsedBody = JSON.parse(formState.body); // Parsear el body antes de guardarlo
+
     if (isEditing) {
       setMocks((mocks) =>
-        mocks.map((mock) => (mock.id === formState.id ? formState : mock))
+        mocks.map((mock) => (mock.id === formState.id ? { ...formState, body: parsedBody } : mock))
       );
       setIsEditModalOpen(false);
     } else {
       setMocks((mocks) => [
         ...mocks,
-        { ...formState, id: Date.now().toString(), date: new Date().toISOString().split('T')[0] },
+        { ...formState, body: parsedBody, id: Date.now().toString(), date: new Date().toISOString().split('T')[0] },
       ]);
       setFormState(initialState);
+      setIsCreateModalOpen(false)
     }
   }, [formState]);
 
+
   const handleEdit = useCallback((mock) => {
-    setFormState(mock);
+    setFormState({
+      ...mock,
+      body: JSON.stringify(mock.body, null, 2) // Convierte el objeto JSON a cadena con sangría
+    });
     setIsEditModalOpen(true);
   }, []);
 
@@ -187,12 +209,12 @@ const toggleExpand = (mockId) => {
     setIsDeleteModalOpen(true);
   }, []);
 
-  const theme = localStorage.getItem('theme') || 'light';
+ 
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Dashboard</h1>
-        <Dialog>
+        <Dialog open={isCreateModalOpen} onOpenChange={(open) => setIsCreateModalOpen(open)}>
           <DialogTrigger asChild>
             <Button>NEW MOCK</Button>
           </DialogTrigger>
@@ -203,10 +225,10 @@ const toggleExpand = (mockId) => {
             <MemoizedMockForm
               mock={formState}
               setMock={setFormState}
-              onSubmit={handleSubmit}
               isEditing={false}
               handleInputChange={handleInputChange}
               handleSwitchChange={handleSwitchChange}
+              onSubmit={handleSubmit}
             />
           </DialogContent>
         </Dialog>
@@ -235,12 +257,17 @@ const toggleExpand = (mockId) => {
             >
               <TableCell>
                 <div className="flex items-center">
+                  <div className='flex flex-col gap-2'>
                   <span>{mock.name}</span>
+                  <span className="outline text-xs font-medium mr-2 px-2.5 py-0.5 rounded max-w-[120px]">
+                    {mock.httpStatus}
+                  </span>
+                  </div>
                   <span className="ml-2">
                     {expandedMockId === mock.id ? (
-                      <ChevronUp className="w-4 h-4" />
+                      <ChevronUp strokeWidth={3} className="w-4 h-4" />
                     ) : (
-                      <ChevronDown className="w-4 h-4" />
+                      <ChevronDown strokeWidth={3} className="w-4 h-4" />
                     )}
                   </span>
                 </div>
@@ -259,6 +286,9 @@ const toggleExpand = (mockId) => {
                   </Button>
                   <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); handleDeleteClick(mock); }}>
                     <Trash2 className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon"> 
+                    <ExternalLink className='h-4 w-4' onClick={() => window.open(`http://localhost:3000/${mock.id}`, '_blank')}/>
                   </Button>
                 </div>
               </TableCell>
