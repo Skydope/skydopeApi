@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowRight, Code, Database, Zap } from 'lucide-react'
 
 export default function Home() {
+  const navigate = useNavigate();
   useEffect(() => {
     document.title = 'Home | Skydope API';
   }, []);
@@ -13,7 +15,7 @@ export default function Home() {
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">Welcome to Skydope API</h1>
         <p className="text-xl text-gray-600 mb-8">Create, manage, and use mock APIs with ease</p>
-        <Button size="lg">
+        <Button size="lg" onClick={() => navigate('/documentation')}>
           Get Started
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>

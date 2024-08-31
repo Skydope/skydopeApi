@@ -1,6 +1,8 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom'
 import { Button } from './components/ui/button'
+import ThemeToggle from './components/ui/theme';
+import  Footer  from './components/footer'
 import Home from './pages/Home'
 import Dashboard from './pages/Dashboard'
 import Documentation from './pages/Documentation'
@@ -27,10 +29,12 @@ function App() {
               <Button variant="outline" asChild>
                 <Link to="/login">Login</Link>
               </Button>
+              <ThemeToggle />
             </div>
           </nav>
+         
         </header>
-        <main>
+        <main className='min-h-[82vh]'>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/documentation" element={<Documentation />} />
@@ -39,6 +43,7 @@ function App() {
             <Route path="/create-account" element={<CreateAcc />} />
           </Routes>
         </main>
+        <Footer />
       </div>
     </Router>
   )
